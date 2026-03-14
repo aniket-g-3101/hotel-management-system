@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login — LuxStay</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;500;600;700&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <style>
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+        :root {
+            --gold: #C9A84C; --gold-light: #E8C96B;
+            --dark: #0A0A0F; --dark-3: #1A1A24; --dark-4: #22222F;
+            --text: #E8E8F0; --text-muted: #888899;
+            --border: rgba(201,168,76,0.15);
+        }
+        body {
+            font-family: 'DM Sans', sans-serif;
+            background: var(--dark); color: var(--text); min-height: 100vh;
+            display: flex;
+        }
+        .split-left {
+            flex: 1; position: relative; overflow: hidden;
+            display: none;
+        }
+        @media(min-width:768px) { .split-left { display: block; } }
+        .split-left img { width: 100%; height: 100%; object-fit: cover; }
+        .split-left::after {
+            content: ''; position: absolute; inset: 0;
+            background: linear-gradient(135deg, rgba(10,10,15,0.6) 0%, rgba(201,168,76,0.15) 100%);
+        }
+        .split-left-text {
+            position: absolute; bottom: 3rem; left: 2.5rem; right: 2.5rem; z-index: 2;
+        }
+        .split-left-text h2 {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 3rem; font-weight: 600; color: #fff; line-height: 1.1;
+        }
+        .split-left-text p { color: rgba(255,255,255,0.7); margin-top: 0.8rem; font-size: 1rem; }
+        .split-right {
+            width: 100%; max-width: 480px;
+            display: flex; align-items: center; justify-content: center;
+            padding: 3rem 2rem;
+            background: var(--dark-3);
+            border-left: 1px solid var(--border);
+        }
+        .auth-box { width: 100%; max-width: 380px; }
+        .brand {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 2rem; font-weight: 600; color: var(--gold);
+            margin-bottom: 2rem; display: block; text-decoration: none;
+        }
+        .brand span { color: var(--text); }
+        h1 { font-family: 'Cormorant Garamond', serif; font-size: 2rem; font-weight: 600; margin-bottom: 0.5rem; }
+        p.subtitle { color: var(--text-muted); font-size: 0.9rem; margin-bottom: 2rem; }
+        .form-group { margin-bottom: 1.2rem; }
+        label { display: block; font-size: 0.8rem; font-weight: 600; color: var(--text-muted); margin-bottom: 0.5rem; letter-spacing: 0.06em; text-transform: uppercase; }
+        input {
+            width: 100%; padding: 0.85rem 1rem; border-radius: 10px;
+            background: var(--dark-4); border: 1px solid var(--border);
+            color: var(--text); font-size: 0.95rem; font-family: 'DM Sans', sans-serif;
+            transition: border-color 0.2s, box-shadow 0.2s; outline: none;
+        }
+        input:focus { border-color: var(--gold); box-shadow: 0 0 0 3px rgba(201,168,76,0.1); }
+        .btn-submit {
+            width: 100%; padding: 0.9rem; background: var(--gold); color: var(--dark);
+            border: none; border-radius: 10px; font-size: 1rem; font-weight: 700;
+            cursor: pointer; font-family: 'DM Sans', sans-serif;
+            transition: background 0.2s, transform 0.2s; margin-top: 0.5rem;
+        }
+        .btn-submit:hover { background: var(--gold-light); transform: translateY(-1px); }
+        .auth-alt { margin-top: 1.5rem; text-align: center; font-size: 0.9rem; color: var(--text-muted); }
+        .auth-alt a { color: var(--gold); text-decoration: none; font-weight: 600; }
+        .messages { margin-bottom: 1rem; }
+        .message { padding: 0.75rem 1rem; border-radius: 8px; font-size: 0.85rem; margin-bottom: 0.5rem; }
+        .message.error { background: rgba(239,68,68,0.15); border: 1px solid rgba(239,68,68,0.3); color: #FCA5A5; }
+        .message.success { background: rgba(16,185,129,0.15); border: 1px solid rgba(16,185,129,0.3); color: #6EE7B7; }
+        .or-divider { display: flex; align-items: center; gap: 1rem; margin: 1.5rem 0; color: var(--text-muted); font-size: 0.8rem; }
+        .or-divider::before, .or-divider::after { content: ''; flex: 1; height: 1px; background: var(--border); }
+    </style>
+</head>
+<body>
+<div class="split-left">
+    <img src="https://images.unsplash.com/photo-1566073771259-6a8506099945?w=1200&q=80" alt="Luxury Hotel">
+    <div class="split-left-text">
+        <h2>Find Your Perfect Stay</h2>
+        <p>Discover luxury hotels across India's most beautiful cities.</p>
+    </div>
+</div>
+<div class="split-right">
+    <div class="auth-box">
+        <a href="{% url 'home' %}" class="brand">Lux<span>Stay</span></a>
+        <h1>Welcome back</h1>
+        <p class="subtitle">Sign in to continue to your account</p>
+
+        {% if messages %}
+        <div class="messages">
+            {% for message in messages %}
+            <div class="message {{ message.tags }}">{{ message }}</div>
+            {% endfor %}
+        </div>
+        {% endif %}
+
+        <form method="post">
+            {% csrf_token %}
+            <div class="form-group">
+                <label>Username</label>
+                <input type="text" name="username" placeholder="Enter your username" required>
+            </div>
+            <div class="form-group">
+                <label>Password</label>
+                <input type="password" name="password" placeholder="••••••••" required>
+            </div>
+            <button type="submit" class="btn-submit">Sign In →</button>
+        </form>
+
+        <div class="auth-alt">
+            Don't have an account? <a href="{% url 'user_register' %}">Create one</a>
+        </div>
+    </div>
+</div>
+</body>
+</html>

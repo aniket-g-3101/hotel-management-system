@@ -1,0 +1,181 @@
+{% extends 'hotel_app/base.html' %}
+{% block title %}LuxStay — Discover Luxury Hotels{% endblock %}
+
+{% block extra_css %}
+<style>
+    .hero {
+        position: relative; min-height: 90vh;
+        display: flex; align-items: center; overflow: hidden;
+    }
+    .hero-bg {
+        position: absolute; inset: 0; z-index: 0;
+        background-image: url('https://images.unsplash.com/photo-1542314831-068cd1dbfeeb?w=1800&q=80');
+        background-size: cover; background-position: center;
+    }
+    .hero-bg::after {
+        content: ''; position: absolute; inset: 0;
+        background: linear-gradient(135deg, rgba(10,10,15,0.85) 30%, rgba(10,10,15,0.4) 100%);
+    }
+    .hero-content { position: relative; z-index: 1; padding: 6rem 2rem 4rem; max-width: 1200px; margin: 0 auto; width: 100%; }
+    .hero-tag { display: inline-flex; align-items: center; gap: 0.5rem; background: rgba(201,168,76,0.15); border: 1px solid var(--border); padding: 0.4rem 1rem; border-radius: 50px; font-size: 0.8rem; color: var(--gold); font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; margin-bottom: 1.5rem; }
+    .hero h1 { font-family: 'Cormorant Garamond', serif; font-size: clamp(3rem, 7vw, 5.5rem); font-weight: 600; line-height: 1.05; color: #fff; max-width: 700px; margin-bottom: 1.5rem; }
+    .hero h1 em { color: var(--gold); font-style: normal; }
+    .hero p { color: rgba(255,255,255,0.7); font-size: 1.1rem; max-width: 480px; line-height: 1.7; margin-bottom: 3rem; }
+
+    .search-box {
+        background: rgba(17,17,24,0.92); backdrop-filter: blur(20px);
+        border: 1px solid var(--border); border-radius: 20px;
+        padding: 1.5rem; max-width: 700px;
+        display: flex; gap: 1rem; flex-wrap: wrap; align-items: flex-end;
+    }
+    .search-group { flex: 1; min-width: 160px; }
+    .search-group label { display: block; font-size: 0.75rem; font-weight: 600; color: var(--text-muted); margin-bottom: 0.5rem; letter-spacing: 0.06em; text-transform: uppercase; }
+    .search-group select, .search-group input {
+        width: 100%; padding: 0.75rem 1rem; background: var(--dark-4);
+        border: 1px solid var(--border); border-radius: 10px;
+        color: var(--text); font-family: 'DM Sans', sans-serif; font-size: 0.9rem;
+        outline: none; transition: border-color 0.2s;
+    }
+    .search-group select:focus, .search-group input:focus { border-color: var(--gold); }
+    .search-group select option { background: var(--dark-3); }
+    .btn-search {
+        background: var(--gold); color: var(--dark);
+        padding: 0.75rem 1.8rem; border-radius: 10px; border: none;
+        font-weight: 700; font-size: 0.9rem; cursor: pointer;
+        font-family: 'DM Sans', sans-serif; transition: all 0.2s;
+        white-space: nowrap;
+    }
+    .btn-search:hover { background: var(--gold-light); transform: translateY(-1px); }
+
+    .stats-bar {
+        background: var(--dark-3); border-bottom: 1px solid var(--border);
+        padding: 1.5rem 2rem;
+    }
+    .stats-inner { max-width: 1200px; margin: 0 auto; display: flex; gap: 3rem; flex-wrap: wrap; justify-content: center; }
+    .stat { text-align: center; }
+    .stat-num { font-family: 'Cormorant Garamond', serif; font-size: 2rem; font-weight: 600; color: var(--gold); }
+    .stat-label { font-size: 0.8rem; color: var(--text-muted); font-weight: 500; }
+
+    .hotels-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(340px, 1fr)); gap: 1.5rem; margin-top: 2rem; }
+    .hotel-card { background: var(--dark-3); border: 1px solid var(--border); border-radius: var(--radius); overflow: hidden; transition: all 0.3s; text-decoration: none; color: inherit; display: block; }
+    .hotel-card:hover { transform: translateY(-6px); box-shadow: 0 24px 48px rgba(0,0,0,0.5); border-color: rgba(201,168,76,0.3); }
+    .hotel-img { position: relative; height: 220px; overflow: hidden; }
+    .hotel-img img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.4s; }
+    .hotel-card:hover .hotel-img img { transform: scale(1.05); }
+    .hotel-img-overlay { position: absolute; inset: 0; background: linear-gradient(to top, rgba(10,10,15,0.7) 0%, transparent 50%); }
+    .hotel-stars-overlay { position: absolute; bottom: 1rem; left: 1rem; }
+    .hotel-price-tag { position: absolute; top: 1rem; right: 1rem; background: rgba(10,10,15,0.85); backdrop-filter: blur(10px); border: 1px solid var(--border); padding: 0.4rem 0.8rem; border-radius: 8px; font-size: 0.8rem; font-weight: 700; color: var(--gold); }
+    .hotel-body { padding: 1.2rem; }
+    .hotel-name { font-family: 'Cormorant Garamond', serif; font-size: 1.4rem; font-weight: 600; margin-bottom: 0.4rem; color: var(--text); }
+    .hotel-city { color: var(--text-muted); font-size: 0.85rem; display: flex; align-items: center; gap: 0.3rem; margin-bottom: 0.8rem; }
+    .hotel-amenities { display: flex; gap: 0.4rem; flex-wrap: wrap; }
+    .amenity-tag { background: rgba(255,255,255,0.05); border: 1px solid var(--border); padding: 0.2rem 0.6rem; border-radius: 50px; font-size: 0.72rem; color: var(--text-muted); }
+
+    .cities-scroll { display: flex; gap: 1rem; overflow-x: auto; padding-bottom: 1rem; scrollbar-width: thin; scrollbar-color: var(--gold) var(--dark-3); }
+    .city-chip {
+        flex-shrink: 0; background: var(--dark-3); border: 1px solid var(--border);
+        border-radius: 100px; padding: 0.6rem 1.4rem; text-decoration: none; color: var(--text-muted);
+        font-size: 0.85rem; font-weight: 500; transition: all 0.2s; white-space: nowrap;
+    }
+    .city-chip:hover { background: rgba(201,168,76,0.1); border-color: var(--gold); color: var(--gold); }
+</style>
+{% endblock %}
+
+{% block content %}
+<!-- HERO -->
+<section class="hero">
+    <div class="hero-bg"></div>
+    <div class="hero-content">
+        <div class="hero-tag">✦ Premium Hotel Collection</div>
+        <h1>Stay in <em>Luxury</em>,<br>Travel in Style</h1>
+        <p>Discover handpicked hotels across India's most vibrant cities. Book your perfect stay today.</p>
+
+        <form method="get" action="{% url 'home' %}">
+            <div class="search-box">
+                <div class="search-group">
+                    <label>Destination City</label>
+                    <select name="city_id" onchange="this.form.submit()">
+                        <option value="">Select a city...</option>
+                        {% for city in cities %}
+                        <option value="{{ city.id }}">{{ city.name }}{% if city.state %}, {{ city.state }}{% endif %}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+            </div>
+        </form>
+    </div>
+</section>
+
+<!-- STATS -->
+<div class="stats-bar">
+    <div class="stats-inner">
+        <div class="stat"><div class="stat-num">{{ cities.count }}+</div><div class="stat-label">Cities</div></div>
+        <div class="stat"><div class="stat-num">500+</div><div class="stat-label">Hotels</div></div>
+        <div class="stat"><div class="stat-num">10K+</div><div class="stat-label">Happy Guests</div></div>
+        <div class="stat"><div class="stat-num">4.8★</div><div class="stat-label">Average Rating</div></div>
+    </div>
+</div>
+
+<!-- CITIES -->
+<section class="section">
+    <div class="container">
+        <h2 class="section-title">Browse by <span>City</span></h2>
+        <div class="divider"></div>
+        <div class="cities-scroll">
+            {% for city in cities %}
+            <a href="{% url 'hotels_by_city' city.id %}" class="city-chip">
+                📍 {{ city.name }}{% if city.state %}, {{ city.state }}{% endif %}
+            </a>
+            {% empty %}
+            <p style="color:var(--text-muted)">No cities found. Add them via admin panel.</p>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+
+<!-- FEATURED HOTELS -->
+{% if featured_hotels %}
+<section class="section" style="padding-top:0">
+    <div class="container">
+        <h2 class="section-title">Featured <span>Hotels</span></h2>
+        <div class="divider"></div>
+        <div class="hotels-grid">
+            {% for hotel in featured_hotels %}
+            <a href="{% url 'hotel_detail' hotel.id %}" class="hotel-card">
+                <div class="hotel-img">
+                    {% if hotel.image_url_1 %}
+                    <img src="{{ hotel.image_url_1 }}" alt="{{ hotel.name }}">
+                    {% else %}
+                    <img src="https://images.unsplash.com/photo-1551882547-ff40c63fe5fa?w=600&q=80" alt="{{ hotel.name }}">
+                    {% endif %}
+                    <div class="hotel-img-overlay"></div>
+                    <div class="hotel-stars-overlay">
+                        <span class="stars">{% for i in "12345" %}{% if forloop.counter <= hotel.stars %}★{% else %}☆{% endif %}{% endfor %}</span>
+                    </div>
+                    <div class="hotel-price-tag">₹{{ hotel.price_per_night }}/night</div>
+                </div>
+                <div class="hotel-body">
+                    <div class="hotel-name">{{ hotel.name }}</div>
+                    <div class="hotel-city">📍 {{ hotel.city.name }}{% if hotel.city.state %}, {{ hotel.city.state }}{% endif %}</div>
+                    <div class="hotel-amenities">
+                        {% for amenity in hotel.get_amenities_list|slice:":4" %}
+                        <span class="amenity-tag">{{ amenity }}</span>
+                        {% endfor %}
+                    </div>
+                </div>
+            </a>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+{% endif %}
+{% endblock %}
+
+{% block extra_js %}
+<script>
+// redirect city select
+document.querySelector('select[name=city_id]').addEventListener('change', function(){
+    if(this.value) window.location = '/hotels/city/' + this.value + '/';
+});
+</script>
+{% endblock %}

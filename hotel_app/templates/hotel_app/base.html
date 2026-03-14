@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}LuxStay — Premium Hotels{% endblock %}</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;500;600;700&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <style>
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+        :root {
+            --gold: #C9A84C;
+            --gold-light: #E8C96B;
+            --dark: #0A0A0F;
+            --dark-2: #111118;
+            --dark-3: #1A1A24;
+            --dark-4: #22222F;
+            --text: #E8E8F0;
+            --text-muted: #888899;
+            --border: rgba(201,168,76,0.15);
+            --radius: 16px;
+        }
+
+        body {
+            font-family: 'DM Sans', sans-serif;
+            background: var(--dark);
+            color: var(--text);
+            min-height: 100vh;
+        }
+
+        /* NAV */
+        nav {
+            position: sticky; top: 0; z-index: 100;
+            background: rgba(10,10,15,0.92);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--border);
+            padding: 0 2rem;
+            display: flex; align-items: center; justify-content: space-between;
+            height: 72px;
+        }
+        .nav-brand {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 1.8rem; font-weight: 600;
+            color: var(--gold); text-decoration: none;
+            letter-spacing: 0.04em;
+        }
+        .nav-brand span { color: var(--text); }
+        .nav-links { display: flex; align-items: center; gap: 2rem; }
+        .nav-links a {
+            color: var(--text-muted); text-decoration: none;
+            font-size: 0.9rem; font-weight: 500; letter-spacing: 0.02em;
+            transition: color 0.2s;
+        }
+        .nav-links a:hover { color: var(--gold); }
+        .nav-btn {
+            background: var(--gold); color: var(--dark) !important;
+            padding: 0.5rem 1.2rem; border-radius: 8px;
+            font-weight: 600 !important;
+        }
+        .nav-btn:hover { background: var(--gold-light) !important; color: var(--dark) !important; }
+
+        /* MESSAGES */
+        .messages { padding: 1rem 2rem; }
+        .message {
+            padding: 0.8rem 1.2rem; border-radius: 10px; margin-bottom: 0.5rem;
+            font-size: 0.9rem; font-weight: 500;
+        }
+        .message.success { background: rgba(16,185,129,0.15); border: 1px solid rgba(16,185,129,0.3); color: #6EE7B7; }
+        .message.error { background: rgba(239,68,68,0.15); border: 1px solid rgba(239,68,68,0.3); color: #FCA5A5; }
+
+        /* BUTTONS */
+        .btn {
+            display: inline-flex; align-items: center; gap: 0.5rem;
+            padding: 0.75rem 1.5rem; border-radius: 10px; font-size: 0.9rem;
+            font-weight: 600; cursor: pointer; text-decoration: none;
+            border: none; transition: all 0.2s; font-family: 'DM Sans', sans-serif;
+        }
+        .btn-gold { background: var(--gold); color: var(--dark); }
+        .btn-gold:hover { background: var(--gold-light); transform: translateY(-1px); }
+        .btn-outline {
+            background: transparent; color: var(--gold);
+            border: 1px solid var(--gold);
+        }
+        .btn-outline:hover { background: rgba(201,168,76,0.1); }
+        .btn-danger { background: rgba(239,68,68,0.15); color: #FCA5A5; border: 1px solid rgba(239,68,68,0.3); }
+        .btn-danger:hover { background: rgba(239,68,68,0.25); }
+        .btn-sm { padding: 0.5rem 1rem; font-size: 0.8rem; }
+
+        /* CARDS */
+        .card {
+            background: var(--dark-3); border: 1px solid var(--border);
+            border-radius: var(--radius); overflow: hidden;
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+        .card:hover { transform: translateY(-4px); box-shadow: 0 20px 40px rgba(0,0,0,0.4); }
+
+        /* STAR RATING */
+        .stars { color: var(--gold); font-size: 0.85rem; letter-spacing: 1px; }
+
+        /* BADGE */
+        .badge {
+            display: inline-flex; align-items: center;
+            padding: 0.25rem 0.7rem; border-radius: 50px; font-size: 0.75rem; font-weight: 600;
+        }
+        .badge-gold { background: rgba(201,168,76,0.15); color: var(--gold); border: 1px solid var(--border); }
+        .badge-green { background: rgba(16,185,129,0.15); color: #6EE7B7; }
+        .badge-red { background: rgba(239,68,68,0.15); color: #FCA5A5; }
+
+        /* FOOTER */
+        footer {
+            border-top: 1px solid var(--border);
+            padding: 2rem; text-align: center;
+            color: var(--text-muted); font-size: 0.85rem; margin-top: 4rem;
+        }
+
+        /* UTILS */
+        .container { max-width: 1200px; margin: 0 auto; padding: 0 2rem; }
+        .section { padding: 4rem 0; }
+        .section-title {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 2.5rem; font-weight: 600; color: var(--text);
+            margin-bottom: 0.5rem;
+        }
+        .section-title span { color: var(--gold); }
+        .divider { width: 60px; height: 2px; background: var(--gold); margin: 1rem 0 2rem; }
+
+        @media (max-width: 768px) {
+            .nav-links { gap: 1rem; }
+            .nav-links a:not(.nav-btn) { display: none; }
+            .container { padding: 0 1rem; }
+        }
+    </style>
+    {% block extra_css %}{% endblock %}
+</head>
+<body>
+
+<nav>
+    <a href="{% url 'home' %}" class="nav-brand">Lux<span>Stay</span></a>
+    <div class="nav-links">
+        {% if user.is_authenticated %}
+            <a href="{% url 'home' %}">Home</a>
+            <a href="{% url 'cities' %}">Cities</a>
+            <a href="{% url 'my_bookings' %}">My Bookings</a>
+            <a href="{% url 'user_logout' %}" class="nav-btn btn">Logout</a>
+        {% else %}
+            <a href="{% url 'user_login' %}">Login</a>
+            <a href="{% url 'user_register' %}" class="nav-btn btn">Sign Up</a>
+        {% endif %}
+    </div>
+</nav>
+
+{% if messages %}
+<div class="messages">
+    {% for message in messages %}
+    <div class="message {{ message.tags }}">{{ message }}</div>
+    {% endfor %}
+</div>
+{% endif %}
+
+{% block content %}{% endblock %}
+
+<footer>
+    <p>© 2024 LuxStay Hotel Management · Crafted with care</p>
+</footer>
+
+{% block extra_js %}{% endblock %}
+</body>
+</html>
