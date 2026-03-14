@@ -1,4 +1,4 @@
-# LuxStay — Hotel Management System
+# LuxStay : Hotel Management System
 
 A Django-based hotel management system with modern dark UI.
 
