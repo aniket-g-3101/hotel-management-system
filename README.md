@@ -13,6 +13,7 @@ A Django-based hotel management system with modern dark UI.
 - Django Admin panel
 - Fully responsive design
 
+
 ## Setup Instructions
 
 ### 1. Create Virtual Environment
